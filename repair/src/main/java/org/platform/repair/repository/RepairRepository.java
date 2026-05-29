@@ -10,32 +10,102 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RepairRepository extends JpaRepository<RepairOrder, Long> {
-    @Query("""
-            SELECT COUNT(r)
-            FROM RepairOrder r
-            WHERE r.createdAt >= :start
-            AND r.createdAt < :end
-            """)
-    long countToday(LocalDateTime start, LocalDateTime end);
 
-    long countByStatus(RepairStatus status);
+    // -------------------------
+    // TENANT SAFE STATS
+    // -------------------------
+    long countByShopId(Long shopId);
 
-    @Query("""
-            SELECT r FROM RepairOrder r
-            LEFT JOIN r.customer c
-            WHERE
-            LOWER(r.deviceModel) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%'))
-            OR LOWER(r.imei) LIKE LOWER(CONCAT('%', :query, '%'))
-            """)
-    List<RepairOrder> search(@Param("query") String query);
-    List<RepairOrder> findByStatus(
+    long countByShopIdAndStatus(
+            Long shopId,
             RepairStatus status
     );
 
-    Page<RepairOrder> findAllByOrderByIdDesc(
+    @Query("""
+        SELECT COUNT(r)
+        FROM RepairOrder r
+        WHERE r.shop.id = :shopId
+        AND r.createdAt >= :start
+        AND r.createdAt < :end
+    """)
+    long countToday(
+            @Param("shopId") Long shopId,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end
+    );
+
+    // -------------------------
+    // SAFE GET
+    // -------------------------
+    Optional<RepairOrder> findByIdAndShopId(
+            Long id,
+            Long shopId
+    );
+
+    // -------------------------
+    // SEARCH
+    // -------------------------
+    @Query("""
+        SELECT r
+        FROM RepairOrder r
+        LEFT JOIN r.customer c
+        WHERE r.shop.id = :shopId
+        AND (
+            LOWER(r.deviceModel) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%'))
+            OR LOWER(r.imei) LIKE LOWER(CONCAT('%', :query, '%'))
+        )
+        ORDER BY r.id DESC
+    """)
+    List<RepairOrder> search(
+            @Param("shopId") Long shopId,
+            @Param("query") String query
+    );
+
+    // -------------------------
+    // STATUS
+    // -------------------------
+    List<RepairOrder> findByShopIdAndStatus(
+            Long shopId,
+            RepairStatus status
+    );
+
+    // -------------------------
+    // LIST
+    // -------------------------
+    Page<RepairOrder> findByShopIdOrderByIdDesc(
+            Long shopId,
             Pageable pageable
+    );
+
+    List<RepairOrder> findByShopId(
+            Long shopId
+    );
+
+    Page<RepairOrder> findByShopId(
+            Long shopId,
+            Pageable pageable
+    );
+    List<RepairOrder> findByCustomerIdAndShopIdOrderByIdDesc(
+            Long customerId,
+            Long shopId
+    );
+
+    List<RepairOrder> findByCustomerIdAndShopId(Long id, Long aLong);
+
+    Optional<RepairOrder> findByImeiAndShopId(
+            String imei,
+            Long shopId
+    );
+    List<RepairOrder> findTop10ByShopIdAndImeiContainingIgnoreCaseOrderByIdDesc(
+            Long shopId,
+            String imei
+    );
+    boolean existsByShopIdAndImei(
+            Long shopId,
+            String imei
     );
 }

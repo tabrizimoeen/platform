@@ -5,7 +5,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface RepairLogRepository extends JpaRepository<RepairLog, Long> {
+public interface RepairLogRepository
+        extends JpaRepository<RepairLog, Long> {
 
-    List<RepairLog> findByRepairIdOrderByCreatedAtAsc(Long repairId);
+    List<RepairLog> findByRepairIdAndShopIdOrderByCreatedAtAsc(
+            Long repairId,
+            Long shopId
+    );
+
+    List<RepairLog> findByShopIdOrderByCreatedAtDesc(
+            Long shopId
+    );
 }

@@ -6,25 +6,23 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "repair_log",schema = "repairs")
+@Table(name = "repair_shop", schema = "repairs")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RepairLog {
+public class RepairShop {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long repairId;
+    private String name;
 
-    private String message;
+    private String ownerName;
 
-    private String status;
-    @ManyToOne
-    @JoinColumn(name = "shop_id")
-    private RepairShop shop;
+    private String phone;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

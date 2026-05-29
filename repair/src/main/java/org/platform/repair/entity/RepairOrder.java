@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.platform.repair.enums.RepairStatus;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +23,9 @@ public class RepairOrder {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private RepairShop shop;
 
     private String deviceModel;
 
@@ -31,9 +35,10 @@ public class RepairOrder {
     @Enumerated(EnumType.STRING)
     private RepairStatus status;
 
-    private Long estimatedCost;
+    private BigDecimal estimatedCost;
 
-    private Long finalCost;
+    private BigDecimal finalCost;
+    @Column(length = 50)
     private String imei;
     private LocalDateTime createdAt = LocalDateTime.now();
 }

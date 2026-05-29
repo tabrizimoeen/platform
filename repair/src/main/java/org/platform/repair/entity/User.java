@@ -19,4 +19,8 @@ public class User {
     private String username;
 
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private RepairShop shop;
 }

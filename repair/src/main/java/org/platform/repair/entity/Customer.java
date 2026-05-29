@@ -21,8 +21,9 @@ public class Customer {
 
     private String name;
 
-    @Column(unique = true)
     private String phone;
-
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private RepairShop shop;
     private LocalDateTime createdAt = LocalDateTime.now();
 }

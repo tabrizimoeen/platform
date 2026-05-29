@@ -7,11 +7,11 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "invoice", schema = "repairs")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "invoice", schema = "repairs")
 @Builder
 public class Invoice {
 
@@ -20,14 +20,14 @@ public class Invoice {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "repair_order_id", nullable = false)
+    @JoinColumn(name = "repair_order_id", unique = true)
     private RepairOrder repairOrder;
 
     private BigDecimal amount;
 
-    @Builder.Default
-    private Boolean paid = false;
-
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private Boolean paid;
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private RepairShop shop;
+    private LocalDateTime createdAt;
 }

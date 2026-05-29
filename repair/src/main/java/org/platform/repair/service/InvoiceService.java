@@ -6,6 +6,7 @@ import org.platform.repair.entity.Invoice;
 import org.platform.repair.entity.RepairOrder;
 import org.platform.repair.repository.InvoiceRepository;
 import org.platform.repair.repository.RepairRepository;
+import org.platform.repair.security.TenantContext;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,17 +18,26 @@ public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final RepairRepository repairRepository;
 
-    public Invoice create(Long repairId, CreateInvoiceRequest req) {
+    public Invoice createOrUpdate(Long repairId, CreateInvoiceRequest req) {
 
-        RepairOrder repair = repairRepository.findById(repairId)
+        Long shopId = TenantContext.get();
+
+        RepairOrder repair = repairRepository.findByIdAndShopId(repairId, shopId)
                 .orElseThrow(() -> new RuntimeException("Repair not found"));
 
-        return invoiceRepository.findByRepairOrderId(repairId)
+        return invoiceRepository
+                .findByRepairOrderIdAndShopId(repairId, shopId)
+                .map(existing -> {
+                    existing.setAmount(req.getAmount());
+                    return invoiceRepository.save(existing);
+                })
                 .orElseGet(() -> {
                     Invoice invoice = Invoice.builder()
                             .repairOrder(repair)
+                            .shop(repair.getShop())
                             .amount(req.getAmount())
                             .paid(false)
+                            .createdAt(LocalDateTime.now())
                             .build();
 
                     return invoiceRepository.save(invoice);
@@ -35,16 +45,40 @@ public class InvoiceService {
     }
 
     public Invoice getByRepair(Long repairId) {
-        return invoiceRepository.findByRepairOrderId(repairId)
+        Long shopId = TenantContext.get();
+
+        return invoiceRepository
+                .findByRepairOrderIdAndShopId(
+                        repairId,
+                        shopId
+                )
                 .orElse(null);
     }
-
     public Invoice markPaid(Long repairId) {
 
-        Invoice invoice = invoiceRepository.findByRepairOrderId(repairId)
-                .orElseThrow(() -> new RuntimeException("Invoice not found"));
+        Long shopId = TenantContext.get();
+
+        Invoice invoice =
+                invoiceRepository
+                        .findByRepairOrderIdAndShopId(
+                                repairId,
+                                shopId
+                        )
+                        .orElseThrow(
+                                () -> new RuntimeException("Invoice not found")
+                        );
+
+        if(Boolean.TRUE.equals(invoice.getPaid())){
+            return invoice;
+        }
 
         invoice.setPaid(true);
+
+        RepairOrder repair = invoice.getRepairOrder();
+        repair.setFinalCost(invoice.getAmount());
+
+        repairRepository.save(repair);
+
         return invoiceRepository.save(invoice);
     }
 }

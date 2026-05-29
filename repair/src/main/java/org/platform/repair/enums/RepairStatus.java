@@ -12,5 +12,7 @@ public enum RepairStatus {
 
     READY,
 
-    DELIVERED
+    DELIVERED,
+
+    CANCELLED
 }
