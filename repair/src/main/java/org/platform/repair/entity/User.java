@@ -2,14 +2,15 @@ package org.platform.repair.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.platform.repair.enums.UserRole;
 
 @Entity
+@Table(name = "users", schema = "repairs")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "users",schema = "repairs")
 public class User {
 
     @Id
@@ -19,6 +20,13 @@ public class User {
     private String username;
 
     private String password;
+
+    private String fullName;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    private Boolean active = true;
 
     @ManyToOne
     @JoinColumn(name = "shop_id")

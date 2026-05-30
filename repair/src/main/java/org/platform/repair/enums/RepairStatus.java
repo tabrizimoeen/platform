@@ -2,17 +2,21 @@ package org.platform.repair.enums;
 
 public enum RepairStatus {
 
-    RECEIVED,
+    RECEIVED("دریافت شده"),
+    DIAGNOSED("عیب‌یابی شده"),
+    WAITING_PARTS("در انتظار قطعه"),
+    IN_REPAIR("در حال تعمیر"),
+    READY("آماده تحویل"),
+    DELIVERED("تحویل داده شده"),
+    CANCELLED("لغو شده");
 
-    DIAGNOSED,
+    private final String labelFa;
 
-    WAITING_PARTS,
+    RepairStatus(String labelFa) {
+        this.labelFa = labelFa;
+    }
 
-    IN_REPAIR,
-
-    READY,
-
-    DELIVERED,
-
-    CANCELLED
+    public String getLabelFa() {
+        return labelFa;
+    }
 }

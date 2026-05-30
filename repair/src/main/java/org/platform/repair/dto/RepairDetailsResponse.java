@@ -27,4 +27,7 @@ public class RepairDetailsResponse {
     private Customer customer;
 
     private Invoice invoice;
+    private String imei;
+
+    private BigDecimal finalCost;
 }

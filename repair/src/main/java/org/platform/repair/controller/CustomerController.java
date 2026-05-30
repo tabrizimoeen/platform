@@ -22,6 +22,11 @@ public class CustomerController {
     public Customer create(@RequestBody Customer customer) {
         return customerService.create(customer);
     }
+
+    @PutMapping
+    public Customer update(@RequestBody Customer customer) {
+        return customerService.create(customer);
+    }
     @GetMapping("/{id}")
     public CustomerDetailsResponse getDetails(@PathVariable Long id) {
         return customerService.getDetails(id);

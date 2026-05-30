@@ -90,7 +90,7 @@ public class RepairService {
         order.setStatus(status);
         RepairOrder saved = repairRepository.save(order);
 
-        addLog(id, "Status changed to " + status, status.name());
+        addLog(id, "وضعیت به " + status.getLabelFa() +" تغییر کرد", status.name());
 
         return saved;
     }
