@@ -25,7 +25,7 @@ public class RegistrationService {
         )) {
 
             throw new RuntimeException(
-                    "Username already exists"
+                    "این نام کاربری قبلاً ثبت شده است"
             );
         }
 

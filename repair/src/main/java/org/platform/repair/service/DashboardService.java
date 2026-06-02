@@ -58,7 +58,7 @@ public class DashboardService {
 
         for (RepairStatus status : RepairStatus.values()) {
             statusCount.put(
-                    status.name(),
+                    status.getLabelFa(),
                     repairRepository.countByShopIdAndStatus(shopId, status)
             );
         }

@@ -34,7 +34,7 @@ public class RepairService {
 
         Long shopId = TenantContext.get();
 
-        RepairShop shop = repairShopRepository.findById(shopId).orElseThrow(() -> new RuntimeException("Shop not found"));
+        RepairShop shop = repairShopRepository.findById(shopId).orElseThrow(() -> new RuntimeException("تعمیرگاه  پیدا نشد"));
 
         Customer customer = customerRepository.findByNameAndShopId(req.getCustomerName(), shopId).orElseGet(() -> {
 
@@ -59,7 +59,7 @@ public class RepairService {
         repair.setImei(req.getImei());
         repair.setStatus(RepairStatus.RECEIVED);
         if (req.getImei() != null && !req.getImei().isBlank() && repairRepository.existsByShopIdAndImei(shopId, req.getImei())) {
-            throw new RuntimeException("IMEI already exists");
+            throw new RuntimeException("این IMEI قبلاً ثبت شده است");
         }
         RepairOrder saved = repairRepository.save(repair);
 
@@ -83,7 +83,7 @@ public class RepairService {
             return order;
         }
         if (!RepairStatusValidator.canMove(order.getStatus(), status)) {
-            throw new IllegalStateException("Invalid status transition: " + order.getStatus() + " -> " + status);
+            throw new IllegalStateException("تغییر وضعیت انتخاب شده مجاز نیست");
         }
 
 

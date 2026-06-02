@@ -24,13 +24,13 @@ public class AuthService {
         User user = userRepository
                 .findByUsername(request.getUsername())
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid username"));
+                        new RuntimeException("نام کاربری یا رمز عبور اشتباه است"));
 
         if (!passwordEncoder.matches(
                 request.getPassword(),
                 user.getPassword()
         )) {
-            throw new RuntimeException("Invalid password");
+            throw new RuntimeException("نام کاربری یا رمز عبور اشتباه است");
         }
 
         return new LoginResponse(
