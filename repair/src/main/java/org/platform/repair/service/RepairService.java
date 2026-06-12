@@ -2,22 +2,26 @@ package org.platform.repair.service;
 
 import lombok.RequiredArgsConstructor;
 import org.platform.repair.dto.CreateRepairRequest;
+import org.platform.repair.dto.NotificationMessage;
 import org.platform.repair.dto.TrackingResponse;
 import org.platform.repair.entity.Customer;
 import org.platform.repair.entity.RepairLog;
 import org.platform.repair.entity.RepairOrder;
 import org.platform.repair.entity.RepairShop;
+import org.platform.repair.enums.NotificationType;
 import org.platform.repair.enums.RepairStatus;
 import org.platform.repair.repository.CustomerRepository;
 import org.platform.repair.repository.RepairLogRepository;
 import org.platform.repair.repository.RepairRepository;
 import org.platform.repair.repository.RepairShopRepository;
 import org.platform.repair.security.TenantContext;
+import org.platform.repair.service.notification.NotificationDispatcherService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -29,6 +33,7 @@ public class RepairService {
     private final RepairLogRepository logRepository;
     private final RepairShopRepository repairShopRepository;
     private final CustomerRepository customerRepository;
+    private final NotificationDispatcherService notificationDispatcherService;
 
     public RepairOrder create(CreateRepairRequest req) {
 
@@ -89,7 +94,8 @@ public class RepairService {
 
         order.setStatus(status);
         RepairOrder saved = repairRepository.save(order);
-
+        NotificationMessage notificationMessage=new NotificationMessage("09150703227",order.getCustomer().getName()+" عزیز","وضعیت دستگاه تعمیری شما به "+status.getLabelFa()+ " تغییر کرد",new HashMap<>());
+        notificationDispatcherService.send(NotificationType.BALE,notificationMessage);
         addLog(id, "وضعیت به " + status.getLabelFa() +" تغییر کرد", status.name());
 
         return saved;
