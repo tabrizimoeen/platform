@@ -15,4 +15,7 @@ spring:
 
 bale:
   bot:
-    token:
+    token: 539965335:_CMXnH06rpPJX6cYDlme0dVWVMDG1X4VrPg
+sms:
+  api-key:
+  sender:

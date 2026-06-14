@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/platform
+    username: postgres
+    password: secret
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-version: 1
+
+  application:
+    name: shop
+jwt:
+  secret-key: my-super-secret-key-my-super-secret-key
+  expiration: 600000
+file:
+  upload-dir: uploads
+zarinpal:
+  merchant-id: YOUR_MERCHANT_ID
+  sandbox: true
+  request-url: https://sandbox.zarinpal.com/pg/v4/payment/request.json
+  startpay-url: https://sandbox.zarinpal.com/pg/StartPay/
+  verify-url: https://sandbox.zarinpal.com/pg/v4/payment/verify.json

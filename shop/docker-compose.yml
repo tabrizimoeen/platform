@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+
+  db:
+    image: postgres:15
+    container_name: shop-db
+    environment:
+      POSTGRES_DB: shop
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: shop-backend
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/platform
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    container_name: shop-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  db_data:
