@@ -34,9 +34,13 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public void register(
+    public LoginResponse register(
             @RequestBody RegisterShopRequest request
     ) {
         registrationService.register(request);
+        LoginRequest login = new LoginRequest();
+        login.setUsername(request.getUsername() == null ? null : request.getUsername().trim());
+        login.setPassword(request.getPassword());
+        return authService.login(login);
     }
 }

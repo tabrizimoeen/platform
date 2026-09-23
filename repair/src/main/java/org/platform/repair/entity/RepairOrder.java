@@ -40,5 +40,9 @@ public class RepairOrder {
     private BigDecimal finalCost;
     @Column(length = 50)
     private String imei;
+
+    @Column(nullable = false, unique = true, length = 16)
+    private String trackingCode;
+
     private LocalDateTime createdAt = LocalDateTime.now();
 }

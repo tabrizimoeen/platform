@@ -6,11 +6,22 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
     properties:
       hibernate:
         format_sql: true
+        default_schema: repairs
+  flyway:
+    enabled: true
+    create-schemas: true
+    schemas: repairs
+    default-schema: repairs
+    baseline-on-migrate: true
+    baseline-version: 0
+
+server:
+  port: 8081
 
 
 bale:

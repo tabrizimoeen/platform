@@ -15,10 +15,10 @@ public class TrackingController {
 
     private final RepairService repairService;
 
-    @GetMapping("/track/{id}")
+    @GetMapping("/track/{code}")
     public TrackingResponse track(
-            @PathVariable Long id
+            @PathVariable String code
     ) {
-        return repairService.track(id);
+        return repairService.trackByCode(code);
     }
 }

@@ -8,6 +8,7 @@ import org.platform.repair.repository.InvoiceRepository;
 import org.platform.repair.repository.RepairRepository;
 import org.platform.repair.security.TenantContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +19,11 @@ public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final RepairRepository repairRepository;
 
+    @Transactional
     public Invoice createOrUpdate(Long repairId, CreateInvoiceRequest req) {
+        if (req.getAmount() == null || req.getAmount().signum() < 0) {
+            throw new RuntimeException("مبلغ فاکتور نامعتبر است");
+        }
 
         Long shopId = TenantContext.get();
 
@@ -54,6 +59,7 @@ public class InvoiceService {
                 )
                 .orElse(null);
     }
+    @Transactional
     public Invoice markPaid(Long repairId) {
 
         Long shopId = TenantContext.get();
