@@ -39,7 +39,7 @@ public class PaymentService {
 
     public String verifyPayment(String authority, String status, Long orderId) {
 
-        Payment payment = paymentRepository.findByOrder_Id(orderId)
+        Payment payment = paymentRepository.findByOrderId(orderId)
                 .orElseThrow();
 
         if (!"OK".equals(status)) {

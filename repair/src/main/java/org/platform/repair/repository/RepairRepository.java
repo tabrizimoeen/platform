@@ -104,8 +104,13 @@ public interface RepairRepository extends JpaRepository<RepairOrder, Long> {
             Long shopId,
             String imei
     );
-    boolean existsByShopIdAndImei(
+    boolean existsByShopIdAndImeiAndStatusNotIn(
             Long shopId,
-            String imei
+            String imei,
+            java.util.Collection<RepairStatus> statuses
     );
+
+    Optional<RepairOrder> findByTrackingCodeIgnoreCase(String trackingCode);
+
+    boolean existsByTrackingCode(String trackingCode);
 }
